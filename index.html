@@ -52,7 +52,7 @@
     </main>
 
     <script>
-        // 指向你全新的 Render API
+        // 🚨 牢牢锁死在真实的 Render 地址
         const API = "https://aegis-api-server.onrender.com/v1/audit";
 
         async function runAudit() {
@@ -71,20 +71,22 @@
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer INT-DEMO-KEY' },
                     body: JSON.stringify({ intent: input })
                 });
-                const data = await response.json();
                 
+                if (!response.ok) throw new Error("Server disconnected");
+                
+                const data = await response.json();
                 const isBlocked = data.status === 'BLOCKED';
                 const color = isBlocked ? 'text-red-500 border-red-500' : 'text-green-500 border-green-500';
                 
                 logs.innerHTML = `
                     <div class="p-3 border-l-2 ${color} bg-white/5">
                         <div class="font-bold mb-1">[VERDICT: ${data.status}]</div>
-                        <div class="text-gray-400">Node: ${data.node_id}</div>
+                        <div class="text-gray-400">Node: ${data.node_id || "Unknown"}</div>
                         <div class="text-gray-300 mt-1">Reason: ${data.reason || "N/A"}</div>
                     </div>
                 `;
             } catch (e) {
-                logs.innerHTML = `<div class="text-red-500 p-2">Connection Failed. Engine offline or timeout.</div>`;
+                logs.innerHTML = `<div class="text-red-500 p-2 font-bold">Connection Failed. Please check if Render server is awake.</div>`;
             }
             btn.innerText = "Run Intent Audit";
             btn.disabled = false;
