@@ -81,7 +81,7 @@
                         <span class="text-[10px] text-cyber-green uppercase">Encrypted Session</span>
                     </div>
                     <div id="logs" class="space-y-4 text-xs">
-                        <div class="text-gray-500 italic">Waiting for connection...</div>
+                        <div class="text-gray-500 italic">Connected to https://aegis-api-server.onrender.com... Ready.</div>
                     </div>
                     <div id="cursor-line" class="mt-4">
                         <span class="text-cyber-green">root@aegis:~#</span> <span class="cursor-blink bg-gray-400 w-2 h-4 inline-block align-middle"></span>
@@ -144,14 +144,14 @@ await agent.execute("Transfer 5 SOL...");</pre>
             // Wake up notification for Render Free Tier
             const wakeUpNote = setTimeout(() => {
                 const note = document.createElement('div');
-                note.className = "text-gray-600 text-[10px] animate-pulse italic mt-1";
-                note.innerText = "Note: Cloud Node is waking up. This may take up to 45s...";
+                note.className = "text-yellow-500 text-[10px] animate-pulse italic mt-2 font-bold";
+                note.innerText = "⚡ NOTE: Cloud Node is spinning up (Render Free Tier). Please allow up to 60s for the initial wake-up call...";
                 logEntry.appendChild(note);
             }, 3000);
 
-            // Timeout Controller
+            // Timeout Controller - Increased to 60s to handle Render spin-up
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 20000);
+            const timeoutId = setTimeout(() => controller.abort(), 60000);
 
             try {
                 const startTime = Date.now();
@@ -186,10 +186,20 @@ await agent.execute("Transfer 5 SOL...");</pre>
 
             } catch (err) {
                 clearTimeout(wakeUpNote);
+                clearTimeout(timeoutId);
                 logEntry.className = `p-4 bg-cyber-900 border-l-2 border-cyber-red rounded-r mt-4`;
+                
+                let errorType = "[FAIL-SAFE TRIGGERED]";
+                let errorDetail = "Server Initializing or Request Timeout.";
+                
+                if (err.name === 'AbortError') {
+                    errorDetail = "The server took too long to wake up. This is common on Free Tier services. Please try again in 10 seconds.";
+                }
+
                 logEntry.innerHTML = `
-                    <div class="text-cyber-red font-bold text-xs uppercase">[FAIL-SAFE TRIGGERED]</div>
-                    <div class="text-gray-500 text-[10px] mt-1">Gateway Timeout or Server Initializing. Transaction halted for safety.</div>
+                    <div class="text-cyber-red font-bold text-xs uppercase">${errorType}</div>
+                    <div class="text-gray-500 text-[10px] mt-1">${errorDetail}</div>
+                    <div class="text-cyber-red text-[10px] mt-2 font-bold italic">SECURITY ACTION: Transaction halted for safety.</div>
                 `;
             }
 
