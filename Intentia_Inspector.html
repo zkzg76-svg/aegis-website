@@ -14,9 +14,11 @@
     </style>
 </head>
 <body class="min-h-screen p-6 md:p-12 relative overflow-x-hidden">
+    <!-- 背景美化光晕 -->
     <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-cyan-900/10 rounded-full blur-[120px]"></div>
 
     <div class="max-w-6xl mx-auto space-y-8 relative z-10">
+        <!-- 头部信息栏 -->
         <header class="flex justify-between items-end border-b border-white/5 pb-8">
             <div>
                 <div class="flex items-center space-x-3 mb-2">
@@ -28,6 +30,7 @@
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- 左侧：日志输入与导入 -->
             <div class="lg:col-span-4 space-y-4">
                 <div class="flex justify-between items-center">
                     <h2 class="text-white text-[11px] font-bold uppercase tracking-widest">Log Ingestion</h2>
@@ -37,9 +40,10 @@
                 <button onclick="analyze()" id="btn" class="w-full bg-cyan-500 text-black py-4 font-black rounded-xl text-xs uppercase tracking-widest hover:bg-white transition">Run Forensic Analysis</button>
             </div>
             
+            <!-- 右侧：审计报告展示区 -->
             <div class="lg:col-span-8 space-y-4">
                 <h2 class="text-white text-[11px] font-bold uppercase tracking-widest">Forensic Verdict</h2>
-                <div id="report" class="glass-panel rounded-2xl p-10 min-h-[450px] flex items-center justify-center italic text-xs text-gray-700 border-dashed border-2 border-white/5">
+                <div id="report" class="glass-panel rounded-2xl p-10 min-h-[450px] flex items-center justify-center italic text-xs text-gray-700 border-dashed border-2 border-white/5 transition-all">
                     Awaiting semantic data for processing...
                 </div>
             </div>
@@ -47,7 +51,7 @@
     </div>
 
     <script>
-        // 指向全新的 Render API
+        // 🚨 牢牢锁死在真实的 Render 地址
         const API = "https://aegis-api-server.onrender.com/v1/report";
 
         function loadSample() {
@@ -69,17 +73,20 @@
             document.getElementById('report').innerHTML = `<div class="text-cyan-500 animate-spin w-8 h-8 border-t-2 border-cyan-500 rounded-full mx-auto"></div>`;
             
             try {
-                const logs = JSON.parse(val);
+                // 处理可能包含非法字符的 JSON
+                const logs = JSON.parse(val.trim());
                 const res = await fetch(API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer INT-DEMO-KEY' },
                     body: JSON.stringify({ project_name: "DEMO_CASE", logs })
                 });
-                if (!res.ok) throw new Error();
+                
+                if (!res.ok) throw new Error("Server disconnected");
+                
                 const report = await res.json();
                 renderReport(report);
             } catch (e) {
-                document.getElementById('report').innerHTML = `<div class="text-red-500 font-bold uppercase">Connection Failed or Invalid JSON.</div>`;
+                document.getElementById('report').innerHTML = `<div class="text-red-500 font-bold uppercase">Connection Failed or Invalid JSON.<br><span class="text-gray-500 text-[10px] mt-2 block">Make sure Render is awake and logs are valid JSON array.</span></div>`;
             }
             btn.innerText = "Run Forensic Analysis";
             btn.disabled = false;
@@ -87,6 +94,13 @@
 
         function renderReport(r) {
             const color = r.verdict === 'COMPROMISED' ? 'text-red-500' : 'text-cyan-500';
+            const suspiciousHTML = r.suspicious_events ? r.suspicious_events.map(ev => `
+                <div class="flex justify-between items-center bg-black/40 p-2 rounded">
+                    <span class="text-red-400 font-mono text-[10px]">${ev.reason}</span>
+                    <span class="text-gray-500 text-[9px]">${ev.timestamp}</span>
+                </div>
+            `).join('') : '<div class="text-gray-500 text-xs">No specific events flagged.</div>';
+
             document.getElementById('report').innerHTML = `
                 <div class="w-full space-y-8">
                     <div class="flex justify-between border-b border-white/10 pb-6">
@@ -100,6 +114,9 @@
                     <div class="space-y-4">
                         <h3 class="text-white text-xs font-bold uppercase tracking-widest">Executive Summary:</h3>
                         <p class="text-sm italic text-gray-300 leading-relaxed border-l-2 border-cyan-500 pl-6">"${r.executive_summary}"</p>
+                        <div class="mt-4 space-y-2">
+                            ${suspiciousHTML}
+                        </div>
                     </div>
                 </div>
             `;
