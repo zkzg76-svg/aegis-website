@@ -30,7 +30,6 @@
 </head>
 <body class="font-mono selection:bg-cyber-green selection:text-black min-h-screen flex flex-col">
 
-    <!-- Header Navigation -->
     <nav class="border-b border-gray-800 p-4 sticky top-0 bg-cyber-900 z-50">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2">
@@ -46,8 +45,6 @@
     </nav>
 
     <main class="max-w-6xl mx-auto p-6 space-y-24">
-        
-        <!-- Hero Section & Live Sandbox -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start py-12">
             <div class="space-y-6">
                 <div class="inline-block border border-cyber-green text-cyber-green px-3 py-1 text-[10px] uppercase tracking-widest rounded-full">
@@ -59,7 +56,7 @@
                     Web3 Agents.
                 </h1>
                 <p class="text-gray-400 text-lg leading-relaxed max-w-lg">
-                    Aegis is the first semantic supervisor layer for the 2026 agentic economy. We don't audit code; we audit <b>intent</b> to stop logic hijacking in real-time.
+                    Aegis audits <b>intent</b> to stop logic hijacking in real-time.
                 </p>
                 
                 <div class="pt-8 space-y-4">
@@ -74,15 +71,14 @@
                 </div>
             </div>
 
-            <!-- Real-time Terminal Display -->
             <div class="bg-cyber-800 rounded-lg border border-gray-700 p-1 shadow-2xl relative glow-green lg:mt-12">
                 <div class="bg-black rounded p-5 h-[450px] overflow-y-auto text-sm" id="terminal">
                     <div class="text-gray-500 mb-2 border-b border-gray-800 pb-2 flex justify-between">
                         <span>Terminal@Sentinel-14</span>
                         <span class="text-[10px] text-cyber-green uppercase">Encrypted Session</span>
                     </div>
-                    <div id="logs" class="space-y-4">
-                        <div class="text-gray-500 italic">Connected to https://aegis-api-server.onrender.com... Ready.</div>
+                    <div id="logs" class="space-y-4 text-xs">
+                        <div class="text-gray-500 italic">Waiting for connection...</div>
                     </div>
                     <div id="cursor-line" class="mt-4">
                         <span class="text-cyber-green">root@aegis:~#</span> <span class="cursor-blink bg-gray-400 w-2 h-4 inline-block align-middle"></span>
@@ -91,58 +87,19 @@
             </div>
         </div>
 
-        <!-- SDK Integration Guide -->
         <div id="sdk" class="border-t border-gray-800 pt-16">
-            <h2 class="text-3xl text-white font-bold mb-8 uppercase tracking-tighter">SDK Implementation</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <div class="space-y-6">
-                    <div class="space-y-2">
-                        <h3 class="text-cyber-green text-xs font-bold uppercase">Plug & Play Skill</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed">
-                            Integrate Aegis as an autonomous Skill. It intercepts all transaction hooks within the agent's core loop, ensuring multi-node consensus before any signature.
-                        </p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-3 bg-cyber-800 rounded border border-gray-800">
-                            <div class="text-white text-xl font-bold mb-1">< 650ms</div>
-                            <div class="text-[10px] text-gray-500 uppercase">Avg Latency</div>
-                        </div>
-                        <div class="p-3 bg-cyber-800 rounded border border-gray-800">
-                            <div class="text-white text-xl font-bold mb-1">99.9%</div>
-                            <div class="text-[10px] text-gray-500 uppercase">Audit Precision</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-cyber-800 p-6 rounded-lg border border-gray-700 relative overflow-hidden group">
-                    <div class="flex justify-between mb-4 border-b border-gray-700 pb-2">
-                        <span class="text-[10px] text-gray-500 uppercase">TypeScript / OpenClaw-Skill.ts</span>
-                        <span class="text-[10px] text-cyber-green">NPM: @aegis/shield</span>
-                    </div>
-                    <pre class="text-[11px] text-cyber-green/90 leading-relaxed overflow-x-auto">
+            <h2 class="text-3xl text-white font-bold mb-8 uppercase tracking-tighter text-center">SDK Implementation</h2>
+            <div class="bg-cyber-800 p-6 rounded-lg border border-gray-700 max-w-2xl mx-auto">
+                <pre class="text-[11px] text-cyber-green/90 leading-relaxed overflow-x-auto">
 import { AegisSkill } from "@aegis/shield";
 
-// Register Aegis to intercept transfers
 agent.registerSkill(new AegisSkill({
     apiKey: "YOUR_AEGIS_TOKEN",
     mode: "ENFORCEMENT" 
-}));
-
-// Validates intent automatically before any sign()
-await agent.execute("Transfer 5 SOL...");</pre>
-                </div>
+}));</pre>
             </div>
         </div>
-
     </main>
-
-    <footer class="mt-24 border-t border-gray-800 py-12 text-center">
-        <div class="flex justify-center space-x-12 mb-6 text-[10px] uppercase tracking-widest text-gray-500">
-            <span class="flex items-center"><span class="w-2 h-2 bg-cyber-green rounded-full mr-2"></span> Failover Active</span>
-            <span class="flex items-center"><span class="w-2 h-2 bg-cyber-green rounded-full mr-2"></span> Stealth Mode</span>
-            <span class="flex items-center"><span class="w-2 h-2 bg-cyber-green rounded-full mr-2"></span> Hunter-Alpha Consensus</span>
-        </div>
-        <p class="text-gray-600 text-[10px] uppercase">© 2026 Aegis-RedTeam Infrastructure. Built for the Sovereign Agent Economy.</p>
-    </footer>
 
     <script>
         const API_URL = "https://aegis-api-server.onrender.com/v1/audit";
@@ -159,65 +116,74 @@ await agent.execute("Transfer 5 SOL...");</pre>
             btn.innerText = "PROCESSING...";
             
             const logEntry = document.createElement('div');
-            logEntry.className = "p-4 bg-cyber-900 border-l-2 border-blue-500 rounded-r";
-            logEntry.innerHTML = `
-                <div class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">[AGENT INTENT CAPTURED]</div>
-                <div class="text-gray-300 mt-2 text-xs italic">"${prompt}"</div>
-            `;
+            logEntry.className = "p-3 bg-cyber-900 border-l-2 border-blue-500 rounded-r";
+            logEntry.innerHTML = `<div class="text-blue-400 text-[9px] font-bold uppercase tracking-widest">[ANALYZING INTENT...]</div>`;
             logs.appendChild(logEntry);
             logs.parentElement.scrollTop = logs.parentElement.scrollHeight;
+
+            // 增加唤醒提示
+            const wakeUpNote = setTimeout(() => {
+                const note = document.createElement('div');
+                note.className = "text-gray-600 text-[10px] animate-pulse italic mt-1";
+                note.innerText = "Note: Render Free Tier is waking up. This may take up to 45s...";
+                logEntry.appendChild(note);
+            }, 3000);
+
+            // 设置超时控制器 (15秒没反应就报超时的错)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 20000);
 
             try {
                 const startTime = Date.now();
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        intent: prompt,
-                        agent_id: "DEMO_USER_NODE"
-                    })
+                    body: JSON.stringify({ intent: prompt, agent_id: "DEMO_NODE" }),
+                    signal: controller.signal
                 });
+
+                clearTimeout(wakeUpNote);
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error ${response.status}`);
+                }
 
                 const data = await response.json();
                 const latency = Date.now() - startTime;
                 document.getElementById('ping').innerText = latency;
 
                 const isBlocked = data.status === 'BLOCKED';
-                const statusColor = isBlocked ? 'text-cyber-red' : 'text-cyber-green';
-                const statusIcon = isBlocked ? '🚨' : '✅';
-                const bgBorder = isBlocked ? 'border-cyber-red' : 'border-cyber-green';
-
-                logEntry.className = `p-4 bg-cyber-900 border-l-2 ${bgBorder} rounded-r mt-4`;
-                logEntry.innerHTML += `
-                    <div class="mt-4 flex items-center space-x-3">
-                        <span class="${statusColor} font-bold tracking-[0.2em] text-sm">${statusIcon} VERDICT: ${data.status}</span>
-                        <span class="text-[10px] text-gray-700">|</span>
-                        <span class="text-[10px] text-gray-600 uppercase">${data.latency_ms || latency}ms LATENCY</span>
+                logEntry.className = `p-3 bg-cyber-900 border-l-2 ${isBlocked ? 'border-cyber-red' : 'border-cyber-green'} rounded-r mt-4`;
+                logEntry.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="${isBlocked ? 'text-cyber-red' : 'text-cyber-green'} font-bold text-xs uppercase tracking-tighter">${isBlocked ? '🚨' : '✅'} VERDICT: ${data.status}</span>
+                        <span class="text-[9px] text-gray-700">|</span>
+                        <span class="text-[9px] text-gray-600 uppercase">${latency}ms</span>
                     </div>
-                    <div class="text-gray-400 text-[11px] mt-2 leading-relaxed border-t border-gray-800 pt-2">
-                        <span class="text-gray-600 uppercase font-bold text-[9px]">Audit Reasoning:</span> ${data.reason}
+                    <div class="text-gray-400 text-[10px] mt-2 border-t border-gray-800 pt-2">
+                        Reasoning: ${data.reason}
                     </div>
                 `;
 
             } catch (err) {
-                logEntry.innerHTML += `
-                    <div class="text-cyber-red mt-3 text-[10px] uppercase font-bold">❌ CONNECTION ERROR: UNABLE TO REACH AEGIS CLOUD</div>
+                clearTimeout(wakeUpNote);
+                let errMsg = "GATEWAY_TIMEOUT: Server failed to respond in time.";
+                if (err.message.includes("HTTP Error")) errMsg = `API_ERROR: ${err.message}. Check OpenRouter Credits.`;
+                
+                logEntry.className = `p-3 bg-cyber-900 border-l-2 border-cyber-red rounded-r mt-4`;
+                logEntry.innerHTML = `
+                    <div class="text-cyber-red font-bold text-xs uppercase">[CRITICAL FAILURE]</div>
+                    <div class="text-gray-500 text-[10px] mt-1">${errMsg}</div>
+                    <div class="text-cyber-red text-[10px] mt-2 font-bold italic">FAIL-SAFE TRIGGERED: TRANSACTION HALTED.</div>
                 `;
             }
 
             btn.disabled = false;
-            btn.innerText = "Run Safety Scan";
+            btn.innerText = "Initialize Safety Audit";
             inputField.value = "";
             logs.parentElement.scrollTop = logs.parentElement.scrollHeight;
         }
-
-        document.getElementById('userInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                runAudit();
-            }
-        });
     </script>
-
 </body>
 </html>
